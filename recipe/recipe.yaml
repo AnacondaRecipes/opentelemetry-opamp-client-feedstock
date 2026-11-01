@@ -25,7 +25,6 @@ requirements:
     - python >=${{ python_min }}
     - opentelemetry-api >=1.12,<2.dev0
     - protobuf >=5.0,<8.0
-    - uuid-utils >=0.11.0,<1
     - requests >=2.0,<3
 
 tests:
