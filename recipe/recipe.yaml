@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: 0.4b0
+  version: "0.5b0"
 
 package:
   name: opentelemetry-opamp-client
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/o/opentelemetry-opamp-client/opentelemetry_opamp_client-${{ version }}.tar.gz
-  sha256: 764d5b6d8e8ca6234af8ebb60fe063a85f3e6784f2566d7e894f1fba7db81cdb
+  sha256: babfbe469ebfd1722a8b2b154aed801a0297b48b4ddbf8dd896275ffa8e835ce
 
 build:
   number: 0
@@ -25,7 +25,6 @@ requirements:
     - python >=${{ python_min }}
     - opentelemetry-api >=1.12,<2.dev0
     - protobuf >=5.0,<8.0
-    - uuid-utils >=0.11.0,<1
     - requests >=2.0,<3
 
 tests:
