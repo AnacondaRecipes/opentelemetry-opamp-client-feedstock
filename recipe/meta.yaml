@@ -1,0 +1,68 @@
+{% set name = "opentelemetry-opamp-client" %}
+{% set version = "0.4b0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name|replace("-", "_") }}-{{ version }}.tar.gz
+  sha256: 764d5b6d8e8ca6234af8ebb60fe063a85f3e6784f2566d7e894f1fba7db81cdb
+
+build:
+  number: 0
+  skip: true  # [py<310]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation  # [not win]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --no-compile  # [win]
+  # Skip compiling byte code to avoid extremely long paths in the conda package cache
+  # Due to the nested structure of this package and the long build string, environments
+  # can exceed the Windows path limit if installed into LOCALAPPDATA
+  skip_compile_pyc:  # [win]
+    - "*"            # [win]
+
+requirements:
+  host:
+    - pip
+    - python
+    - hatchling
+  run:
+    - python
+    - opentelemetry-api >=1.12,<2
+    - protobuf >=5.0,<8.0
+    # Upper bound is <8, not the <7 published in the v0.66b1 dev tree: upstream relaxed it
+    # to <8 as the exporters do, in
+    # https://github.com/open-telemetry/opentelemetry-python-contrib/pull/5151 (commit 5bca9923).
+    # It is also what the released 0.4b0 sdist metadata requires (Requires-Dist: protobuf<8.0).
+    - requests >=2.0,<3
+    - uuid-utils >=0.11.0,<1
+
+# tests/opamp/test_e2e.py is deselected: it is decorated with @pytest.mark.vcr and
+# replays recorded cassettes via the pytest-vcr plugin, which is not in the main channel.
+test:
+  source_files:
+    - tests
+  imports:
+    - opentelemetry._opamp.client
+  requires:
+    - pip
+    - pytest
+  commands:
+    - pip check
+    - pytest -vv tests --ignore tests/opamp/test_e2e.py
+
+about:
+  home: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/opamp/opentelemetry-opamp-client
+  summary: OpenTelemetry OpAMP client
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: Apache
+  description: |
+    The OpenTelemetry OpAMP client, used to communicate with an OpAMP server for
+    remote configuration of OpenTelemetry agents.
+  dev_url: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/opamp/opentelemetry-opamp-client
+  doc_url: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/opamp/opentelemetry-opamp-client
+
+extra:
+  recipe-maintainers:
+    - BrownMunda1
+    - Arishamays1
